@@ -1,13 +1,17 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterwhatsapp/pages/call_screen.dart';
+import 'package:flutterwhatsapp/pages/message_screen.dart';
 import 'package:flutterwhatsapp/pages/camera_screen.dart';
 import 'package:flutterwhatsapp/pages/chat_screen.dart';
 import 'package:flutterwhatsapp/pages/status_screen.dart';
+import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 class WhatsAppHome extends StatefulWidget {
   final List<CameraDescription> cameras;
-  WhatsAppHome({this.cameras});
+  final WebSocketChannel channel;
+
+  WhatsAppHome({this.cameras, @required this.channel});
 
   @override
   _WhatsAppHomeState createState() => _WhatsAppHomeState();
@@ -22,7 +26,7 @@ class _WhatsAppHomeState extends State<WhatsAppHome>
   void initState() {
     super.initState();
 
-    _tabController = TabController(vsync: this, initialIndex: 1, length: 4);
+    _tabController = TabController(vsync: this, initialIndex: 1, length: 2);
     _tabController.addListener(() {
       if (_tabController.index == 1) {
         showFab = true;
@@ -31,26 +35,21 @@ class _WhatsAppHomeState extends State<WhatsAppHome>
       }
       setState(() {});
     });
+
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("WhatsApp"),
+        title: Text("messaging"),
         elevation: 0.7,
         bottom: TabBar(
           controller: _tabController,
           indicatorColor: Colors.white,
           tabs: <Widget>[
-            Tab(icon: Icon(Icons.camera_alt)),
             Tab(text: "CHATS"),
-            Tab(
-              text: "STATUS",
-            ),
-            Tab(
-              text: "CALLS",
-            ),
+            Tab(text: "SEND"),
           ],
         ),
         actions: <Widget>[
@@ -64,10 +63,8 @@ class _WhatsAppHomeState extends State<WhatsAppHome>
       body: TabBarView(
         controller: _tabController,
         children: <Widget>[
-          CameraScreen(widget.cameras),
-          ChatScreen(),
-          StatusScreen(),
-          CallsScreen(),
+          ChatScreen(widget.channel),
+          MessageScreen(widget.channel),
         ],
       ),
       floatingActionButton: showFab
@@ -77,7 +74,7 @@ class _WhatsAppHomeState extends State<WhatsAppHome>
                 Icons.message,
                 color: Colors.white,
               ),
-              onPressed: () => print("open chats"),
+              onPressed: () => print("send message chat"),
             )
           : null,
     );

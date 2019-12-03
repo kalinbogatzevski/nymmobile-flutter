@@ -33,7 +33,11 @@ Future<WebSocketChannel> connectWS() async {
     // check message type
 //      decode["clients"]
 //      decode["fetch"]
-    globals.clients = decode["clients"]["clients"];
+
+    if(decode["clients"] != null) {
+      globals.clients = decode["clients"]["clients"];
+    }
+    print(data);
     // base64url.decode()
   }, onError: (err) {
     print("err: $err");

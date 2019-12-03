@@ -74,7 +74,7 @@ class _WhatsAppHomeState extends State<WhatsAppHome>
                 Icons.message,
                 color: Colors.white,
               ),
-              onPressed: () => print("send message chat"),
+              onPressed: () => widget.channel.sink.add('{"fetch" : {}}'),
             )
           : null,
     );

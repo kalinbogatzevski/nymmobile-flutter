@@ -17,11 +17,17 @@ class MessageScreen extends StatefulWidget {
 }
 
 class MessageScreenState extends State<MessageScreen> {
+  String destination;
+
   @override
   void initState() {
     super.initState();
 
     print(globals.clients);
+    destination = "none";
+    if (globals.clients != null) {
+      destination = globals.clients[globals.selected_client]['pubKey'];
+    }
     // set clients on the state
     setState(() {});
   }
@@ -34,7 +40,7 @@ class MessageScreenState extends State<MessageScreen> {
         new Container(
           width: MediaQuery.of(context).size.width * 0.7,
           child: new Text(
-            globals.clients[globals.selected_client]['pubKey'],
+            destination,
             style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
             softWrap: true,
           ),

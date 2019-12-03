@@ -30,7 +30,7 @@ class ChatScreenState extends State<ChatScreen> {
 //    senderPublicKey: this.ownDetails.pubKey,
 //    };
 
-    print(globals.clients);
+//    print(globals.clients);
     // set clients on the state
     setState(() {});
   }

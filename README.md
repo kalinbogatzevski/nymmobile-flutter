@@ -13,11 +13,13 @@ Based on the following project: https://github.com/iampawan/FlutterWhatsAppClone
 
 ### TODO 
 
-[x] - Add Nym Mixnet Mobile Client 
-[x] - Connect with Nym Client and start Websocket
-[x] - Connect to a provider and fetch online users
-[x] - Contact list screen
-[ ] - Send and Receive screen
-[ ] - Chat screen
-[ ] - Settings screen
+    [x] - Add Nym Mixnet Mobile Client
+    [x] - Connect with Nym Client and start Websocket
+    [x] - Connect to a provider and fetch online users
+    [x] - Contact list screen
+    [ ] - Send and Receive screen
+    [ ] - Chat screen
+    [ ] - Settings screen
+    [ ] - Test on Android NDK new version
+    [x] - Test on iOS
 

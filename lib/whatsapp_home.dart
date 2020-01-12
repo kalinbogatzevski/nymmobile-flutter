@@ -49,7 +49,7 @@ class _WhatsAppHomeState extends State<WhatsAppHome>
           indicatorColor: Colors.white,
           tabs: <Widget>[
             Tab(text: "CHATS"),
-            Tab(text: "SEND"),
+            Tab(text: "WALLET"),
           ],
         ),
         actions: <Widget>[
@@ -67,16 +67,16 @@ class _WhatsAppHomeState extends State<WhatsAppHome>
           MessageScreen(widget.channel),
         ],
       ),
-      floatingActionButton: showFab
-          ? FloatingActionButton(
-              backgroundColor: Theme.of(context).accentColor,
-              child: Icon(
-                Icons.message,
-                color: Colors.white,
-              ),
-              onPressed: () => widget.channel.sink.add('{"fetch" : {}}'),
-            )
-          : null,
+//      floatingActionButton: showFab
+//          ? FloatingActionButton(
+//              backgroundColor: Theme.of(context).accentColor,
+//              child: Icon(
+//                Icons.message,
+//                color: Colors.white,
+//              ),
+//              onPressed: () => widget.channel.sink.add('{"fetch" : {}}'),
+//            )
+//          : null,
     );
   }
 }

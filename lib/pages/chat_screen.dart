@@ -32,6 +32,9 @@ class ChatScreenState extends State<ChatScreen> {
 
 //    print(globals.clients);
     // set clients on the state
+    if(globals.clients == null) {
+      globals.clients = [''];
+    }
     setState(() {});
   }
 
@@ -60,7 +63,7 @@ class ChatScreenState extends State<ChatScreen> {
                 new Container(
                   width: MediaQuery.of(context).size.width * 0.7,
                   child: new Text(
-                    globals.clients[i]['pubKey'],
+                    globals.clients != null ? globals.clients[i] : "",
                     style: new TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 15.0),
                     softWrap: true,
@@ -71,7 +74,7 @@ class ChatScreenState extends State<ChatScreen> {
             subtitle: new Container(
               padding: const EdgeInsets.only(top: 5.0),
               child: new Text(
-                globals.clients[i]['provider']['pubKey'],
+                globals.clients != null ? globals.clients[i] : "",
                 style: new TextStyle(color: Colors.grey, fontSize: 15.0),
                 softWrap: true,
               ),

@@ -25,17 +25,18 @@ Future<Null> main() async {
 }
 
 Future<WebSocketChannel> connectWS() async {
-  channel = IOWebSocketChannel.connect('ws://127.0.0.1:1707/mix');
+  channel = IOWebSocketChannel.connect('ws://127.0.0.1:9001/');
 
   channel.stream.listen((data) {
     // parse from json
     Map<String, dynamic> decode = jsonDecode(data);
+      print(data);
     // check message type
 //      decode["clients"]
 //      decode["fetch"]
 
     if(decode["clients"] != null) {
-      globals.clients = decode["clients"]["clients"];
+      globals.clients = decode["clients"];
     }
     print(data);
     // base64url.decode()
@@ -45,7 +46,7 @@ Future<WebSocketChannel> connectWS() async {
     print("onDone. ");
   });
 
-  channel.sink.add('{"clients" : {}}');
+  channel.sink.add('{"type" : "getClients" }');
   //  channel.sink.add('{"fetch" : {}}');
 
   return channel;

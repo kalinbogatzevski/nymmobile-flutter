@@ -25,8 +25,12 @@ class MessageScreenState extends State<MessageScreen> {
 
     print(globals.clients);
     destination = "none";
-    if (globals.clients != null) {
-      destination = globals.clients[globals.selected_client]['pubKey'];
+    if (globals.clients != null && globals.clients.length > 0) {
+      if(globals.selected_client == null) {
+        globals.selected_client = 0;
+      }
+
+      destination = globals.clients[globals.selected_client];
     }
     // set clients on the state
     setState(() {});

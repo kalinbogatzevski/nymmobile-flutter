@@ -1,8 +1,0 @@
-framework module "Nymmobile" {
-	header "ref.h"
-    header "Nymmobile.objc.h"
-    header "Universe.objc.h"
-    header "Nymmobile.h"
-
-    export *
-}

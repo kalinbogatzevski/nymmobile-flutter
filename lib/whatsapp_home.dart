@@ -3,15 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutterwhatsapp/pages/message_screen.dart';
 import 'package:flutterwhatsapp/pages/camera_screen.dart';
 import 'package:flutterwhatsapp/pages/chat_screen.dart';
-import 'package:flutterwhatsapp/pages/status_screen.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class WhatsAppHome extends StatefulWidget {
   final List<CameraDescription> cameras;
-  final WebSocketChannel channel;
 
-  WhatsAppHome({this.cameras, @required this.channel});
+  WhatsAppHome({this.cameras});
 
   @override
   _WhatsAppHomeState createState() => _WhatsAppHomeState();
@@ -26,7 +24,7 @@ class _WhatsAppHomeState extends State<WhatsAppHome>
   void initState() {
     super.initState();
 
-    _tabController = TabController(vsync: this, initialIndex: 1, length: 2);
+    _tabController = TabController(vsync: this, initialIndex: 0, length: 2);
     _tabController.addListener(() {
       if (_tabController.index == 1) {
         showFab = true;
@@ -63,8 +61,8 @@ class _WhatsAppHomeState extends State<WhatsAppHome>
       body: TabBarView(
         controller: _tabController,
         children: <Widget>[
-          ChatScreen(widget.channel),
-          MessageScreen(widget.channel),
+          ChatScreen(),
+          MessageScreen(),
         ],
       ),
 //      floatingActionButton: showFab

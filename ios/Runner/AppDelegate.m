@@ -9,9 +9,7 @@
   // Override point for customization after application launch.
     
     NSString *userId = @"userId";
-    NSString *defaultProviderId = @"54U6krAr-j9nQXFlsHk3io04_p0tctuqH71t7w_usgI=";
-//    NymmobileGenerateKeyPair(userId, NSHomeDirectory(), defaultProviderId);
-//    NymmobileStartWebsocket(userId, NSHomeDirectory());
+    NSString *directory = @"http://192.168.1.24:8080";
     
     init([userId UTF8String]);
     
@@ -33,7 +31,8 @@
             //### background task starts
             NSLog(@"Running in the background\n");
           
-            start_ws([userId UTF8String]);
+            
+            start_ws([userId UTF8String], [directory UTF8String]);
             
             //#### background task ends
      

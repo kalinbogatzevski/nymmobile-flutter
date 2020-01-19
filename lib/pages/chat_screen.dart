@@ -8,9 +8,8 @@ import 'package:flutterwhatsapp/globals.dart' as globals;
 import 'message_screen.dart';
 
 class ChatScreen extends StatefulWidget {
-  final WebSocketChannel channel;
 
-  ChatScreen(this.channel);
+  ChatScreen();
 
   @override
   ChatScreenState createState() {
@@ -23,25 +22,13 @@ class ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
 
-    // TODO create a model
-//    {
-//      content: message,
-//    senderProviderPublicKey: this.ownDetails.provider.pubKey,
-//    senderPublicKey: this.ownDetails.pubKey,
-//    };
-
-//    print(globals.clients);
-    // set clients on the state
-    if(globals.clients == null) {
-      globals.clients = [''];
-    }
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return new ListView.builder(
-      itemCount: globals.clients.length,
+      itemCount: globals.clients.values.length,
       itemBuilder: (context, i) => new Column(
         children: <Widget>[
           new Divider(
@@ -49,8 +36,7 @@ class ChatScreenState extends State<ChatScreen> {
           ),
           new ListTile(
             onTap: () {
-              globals.selected_client = i;
-
+              globals.selected_client = globals.clients.values.elementAt(i);
             },
             leading: new CircleAvatar(
               foregroundColor: Theme.of(context).primaryColor,
@@ -63,7 +49,9 @@ class ChatScreenState extends State<ChatScreen> {
                 new Container(
                   width: MediaQuery.of(context).size.width * 0.7,
                   child: new Text(
-                    globals.clients != null ? globals.clients[i] : "",
+                    globals.clients != null
+                        ? globals.clients.values.elementAt(i).name
+                        : "",
                     style: new TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 15.0),
                     softWrap: true,
@@ -74,7 +62,9 @@ class ChatScreenState extends State<ChatScreen> {
             subtitle: new Container(
               padding: const EdgeInsets.only(top: 5.0),
               child: new Text(
-                globals.clients != null ? globals.clients[i] : "",
+                globals.clients != null
+                    ? globals.clients.values.elementAt(i).pubkey
+                    : "",
                 style: new TextStyle(color: Colors.grey, fontSize: 15.0),
                 softWrap: true,
               ),

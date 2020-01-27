@@ -1,6 +1,7 @@
 library globals;
 
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:bitcoin_flutter/src/payments/index.dart' show PaymentData;
 import 'package:bitcoin_flutter/src/payments/p2pkh.dart';
@@ -10,6 +11,8 @@ import 'package:bip32/bip32.dart' as bip32;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+import 'models/send_message_model.dart';
+
 // Create storage
 final storage = new FlutterSecureStorage();
 
@@ -18,6 +21,8 @@ Client selected_client = null;
 var address = "none";
 var mnemonic = "";
 var me = "";
+var triesCount = 0;
+
 WebSocketChannel channel;
 
 String getAddress(node, [network]) {
@@ -27,13 +32,10 @@ String getAddress(node, [network]) {
 }
 
 String sendMessage(String destination, String message) {
-  var payload = '{ "type" : "send", "message" : ' +
-      message +
-      ', "recipient_address" : "' +
-      destination +
-      ' " }';
-
-  channel.sink.add(payload);
+  var payload = new SendMessagePayload("send", message, destination);
+  var jsonPayload = json.encode(payload);
+  print(jsonPayload);
+  channel.sink.add(jsonPayload);
 }
 
 Future<void> loadWallet() async {

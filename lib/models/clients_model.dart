@@ -3,7 +3,7 @@ class Client {
   final String name;
   List<dynamic> messages = new List<dynamic>();
 
-  Client({this.pubkey, this.name});
+  Client({this.name, this.pubkey});
 
   void set addMessage(String message) {
     this.messages.add(message);

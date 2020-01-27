@@ -8,8 +8,8 @@
   [GeneratedPluginRegistrant registerWithRegistry:self];
   // Override point for customization after application launch.
     
-    NSString *userId = @"userId";
-    NSString *directory = @"http://192.168.1.24:8080";
+    NSString *userId = @"bob";
+    NSString *directory = @"http://192.168.1.25:8080/";
     
     init([userId UTF8String]);
     

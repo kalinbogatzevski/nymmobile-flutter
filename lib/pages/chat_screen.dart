@@ -8,7 +8,6 @@ import 'package:flutterwhatsapp/globals.dart' as globals;
 import 'message_screen.dart';
 
 class ChatScreen extends StatefulWidget {
-
   ChatScreen();
 
   @override
@@ -28,7 +27,7 @@ class ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return new ListView.builder(
-      itemCount: globals.clients.values.length,
+      itemCount: globals.clients.length,
       itemBuilder: (context, i) => new Column(
         children: <Widget>[
           new Divider(

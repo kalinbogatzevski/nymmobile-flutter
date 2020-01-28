@@ -24,7 +24,6 @@ Future<Null> main() async {
 }
 
 Future<void> connectWS() async {
-  sleep(const Duration(seconds: 5));
   try {
     globals.channel = IOWebSocketChannel.connect('ws://127.0.0.1:9001/');
 

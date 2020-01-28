@@ -9,7 +9,7 @@
   // Override point for customization after application launch.
     
     NSString *userId = @"bob";
-    NSString *directory = @"http://192.168.1.25:8080/";
+    NSString *directory = @"https://directory.nymtech.net/";
     
     init([userId UTF8String]);
     

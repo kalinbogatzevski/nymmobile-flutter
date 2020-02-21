@@ -17,9 +17,9 @@ Based on the following project: https://github.com/iampawan/FlutterWhatsAppClone
     [x] - Connect with Nym Client and start Websocket
     [x] - Connect to a provider and fetch online users
     [x] - Contact list screen
-    [ ] - Send and Receive screen
-    [ ] - Chat screen
-    [ ] - Settings screen
+    [x] - Send and Receive screen
+    [x] - Chat Message screen
+    [x] - Own Details screen
     [ ] - Test on Android NDK new version
     [x] - Test on iOS
 

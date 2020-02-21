@@ -16,16 +16,26 @@ List<CameraDescription> cameras;
 
 Future<Null> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  cameras = await availableCameras();
-  await globals.loadWallet();
-  await connectWS();
-
+//  cameras = await availableCameras();
+//  await globals.loadWallet();
   runApp(new MyApp());
+
+  await connectWS();
+}
+
+Future<void> check_messages() async {
+  new Future.delayed(const Duration(seconds: 6), () {
+    globals.channel.sink.add('{"type" : "fetch" }');
+    check_messages();
+  });
 }
 
 Future<void> connectWS() async {
   try {
-    globals.channel = IOWebSocketChannel.connect('ws://127.0.0.1:9001/');
+    // TODO add a loading screen
+    await Future.delayed(Duration(seconds: 20));
+
+    globals.channel = IOWebSocketChannel.connect('ws://127.0.0.1:1707');
 
     globals.channel.stream.listen((data) {
       Map<String, dynamic> decode = jsonDecode(data);
@@ -33,15 +43,27 @@ Future<void> connectWS() async {
       if (decode["type"] == "getClients") {
         final list = decode["clients"];
         for (final x in list) {
-          globals.clients[x] = new Client(name: x, pubkey: x);
+          globals.clients.add(x);
         }
+        globals.clients.sort();
       } else if (decode["type"] == "ownDetails") {
-        globals.me = decode['address'];
+        globals.address = decode['address'];
+
+        check_messages();
       } else if (decode["type"] == "fetch") {
-//      base64.encode(bytes);
+        print(decode["messages"]);
+        for (final x in decode["messages"]) {
+          globals.messages.add(x);
+        }
       }
     }, onError: (err) {
       print("err: $err");
+
+      globals.triesCount++;
+      if (globals.triesCount <= 3) {
+        print("trying " + globals.triesCount.toString());
+        connectWS();
+      }
     }, onDone: () {
       print("onDone. ");
     });
@@ -49,13 +71,12 @@ Future<void> connectWS() async {
     globals.channel.sink.add('{"type" : "ownDetails" }');
     globals.channel.sink.add('{"type" : "getClients" }');
     globals.channel.sink.add('{"type" : "fetch" }');
-    globals.sendMessage(
-        "Np8qdePpksIIvkCx26yspj1LMynfgERAYRqT4q1TMng=", "test message");
-
   } catch (e) {
     print('Error connecting to ws: $e');
     globals.triesCount++;
     if (globals.triesCount <= 3) {
+      print("trying " + globals.triesCount.toString());
+
       await connectWS();
     }
   }

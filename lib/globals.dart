@@ -11,18 +11,16 @@ import 'package:bip32/bip32.dart' as bip32;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-import 'models/send_message_model.dart';
-
 // Create storage
 final storage = new FlutterSecureStorage();
 
-HashMap<String, Client> clients = new HashMap<String, Client>();
-Client selected_client = null;
-var address = "none";
+List<String> clients = new List<String>();
+String selected_client = null;
+var btcaddr = "none";
 var mnemonic = "";
-var me = "";
+var address = "";
 var triesCount = 0;
-
+List<String> messages = new List<String>();
 WebSocketChannel channel;
 
 String getAddress(node, [network]) {
@@ -32,9 +30,12 @@ String getAddress(node, [network]) {
 }
 
 String sendMessage(String destination, String message) {
-  var payload = new SendMessagePayload("send", message, destination);
+  var payload = {
+    "type": "send",
+    "message": message,
+    "recipient_address": destination
+  };
   var jsonPayload = json.encode(payload);
-  print(jsonPayload);
   channel.sink.add(jsonPayload);
 }
 
@@ -52,6 +53,6 @@ Future<void> loadWallet() async {
   var root = bip32.BIP32.fromSeed(seed);
 
   // save address
-  address = getAddress(root.derivePath("m/0'/0/0"));
+  btcaddr = getAddress(root.derivePath("m/0'/0/0"));
   mnemonic = words;
 }

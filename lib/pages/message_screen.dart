@@ -1,14 +1,13 @@
 import 'dart:convert';
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:web_socket_channel/src/channel.dart';
 import 'package:flutterwhatsapp/globals.dart' as globals;
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
 
 class MessageScreen extends StatefulWidget {
-
   MessageScreen();
 
   @override
@@ -19,64 +18,93 @@ class MessageScreen extends StatefulWidget {
 
 class MessageScreenState extends State<MessageScreen> {
   String destination;
-  String barcode = "";
+  final TextEditingController _textController = new TextEditingController();
 
   @override
   void initState() {
     super.initState();
     destination = "none";
-    print(globals.selected_client);
-    print(globals.clients[globals.selected_client]);
+    if (globals.selected_client != null) {
+      destination = globals.selected_client;
+    }
+
+    globals.channel.sink.add('{"type" : "fetch" }');
     // set clients on the state
-    setState(() {});
+    setState(() {
+      globals.messages.insert(0, "send to: " + destination);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        new Container(
-          width: MediaQuery.of(context).size.width * 0.7,
-          child: new Text(
-            "My Nym Address: " +
-                " \r\n " +
-                globals.me +
-                "Address: " +
-                globals.address +
-                " \r\n "
-                    "BIP39: " +
-                globals.mnemonic,
-            style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
-            softWrap: true,
-          ),
-        ),
-        new Container(
-          child: new MaterialButton(onPressed: scan, child: new Text("Scan")),
-          padding: const EdgeInsets.all(8.0),
-        ),
-        new Text(barcode),
-      ],
+    return new Column(children: <Widget>[
+      new Flexible(
+          child: new ListView.builder(
+            padding: new EdgeInsets.all(8.0),
+            reverse: true,
+            itemBuilder: (_, int index) => new Text(globals.messages[index]),
+            itemCount: globals.messages.length,
+          )),
+      new Divider(height: 1.0),
+      new Container(
+        decoration: new BoxDecoration(color: Theme
+            .of(context)
+            .cardColor),
+        child: _buildTextComposer(),
+      ),
+    ]);
+  }
+
+  Widget _buildTextComposer() {
+    return new IconTheme(
+      data: new IconThemeData(color: Theme
+          .of(context)
+          .accentColor),
+      child: new Container(
+          margin: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: new Row(children: <Widget>[
+            new Flexible(
+              child: new TextField(
+                controller: _textController,
+                onChanged: (String text) {
+                  setState(() {});
+                },
+                onSubmitted: _handleSubmitted,
+                decoration:
+                new InputDecoration.collapsed(hintText: "Send a message"),
+              ),
+            ),
+            new Container(
+                margin: new EdgeInsets.symmetric(horizontal: 4.0),
+                child: Theme
+                    .of(context)
+                    .platform == TargetPlatform.iOS
+                    ? new CupertinoButton(
+                  child: new Text("Send"),
+                  onPressed: () => _handleSubmitted(_textController.text),
+                )
+                    : new IconButton(
+                  icon: new Icon(Icons.send),
+                  onPressed: () => _handleSubmitted(_textController.text),
+                )),
+          ]),
+          decoration: Theme
+              .of(context)
+              .platform == TargetPlatform.iOS
+              ? new BoxDecoration(
+              border:
+              new Border(top: new BorderSide(color: Colors.grey[200])))
+              : null),
     );
   }
 
-  Future scan() async {
-    try {
-      String barcode = await BarcodeScanner.scan();
-      setState(() => this.barcode = barcode);
-    } on PlatformException catch (e) {
-      if (e.code == BarcodeScanner.CameraAccessDenied) {
-        setState(() {
-          this.barcode = 'The user did not grant the camera permission!';
-        });
-      } else {
-        setState(() => this.barcode = 'Unknown error: $e');
-      }
-    } on FormatException {
-      setState(() => this.barcode =
-          'null (User returned using the "back"-button before scanning anything. Result)');
-    } catch (e) {
-      setState(() => this.barcode = 'Unknown error: $e');
+  void _handleSubmitted(String text) {
+    _textController.clear();
+    if(text.isNotEmpty) {
+      globals.sendMessage(destination, text);
+      setState(() {
+        globals.messages.add("you: " + text);
+      });
     }
   }
 }

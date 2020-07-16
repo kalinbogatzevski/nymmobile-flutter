@@ -1,16 +1,11 @@
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterwhatsapp/pages/message_screen.dart';
-import 'package:flutterwhatsapp/pages/camera_screen.dart';
 import 'package:flutterwhatsapp/pages/chat_screen.dart';
 import 'package:flutterwhatsapp/pages/own_details.dart';
-import 'package:web_socket_channel/io.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:flutterwhatsapp/globals.dart' as globals;
 
 class WhatsAppHome extends StatefulWidget {
-  final List<CameraDescription> cameras;
-
-  WhatsAppHome({this.cameras});
+  WhatsAppHome();
 
   @override
   _WhatsAppHomeState createState() => _WhatsAppHomeState();
@@ -33,6 +28,7 @@ class _WhatsAppHomeState extends State<WhatsAppHome>
         showFab = false;
       }
 
+      globals.check_messages();
 
       setState(() {});
     });

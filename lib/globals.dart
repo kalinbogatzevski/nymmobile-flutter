@@ -1,33 +1,22 @@
 library globals;
 
-import 'dart:collection';
 import 'dart:convert';
-
-import 'package:bitcoin_flutter/src/payments/index.dart' show PaymentData;
-import 'package:bitcoin_flutter/src/payments/p2pkh.dart';
-import 'package:flutterwhatsapp/models/clients_model.dart';
-import 'package:bip39/bip39.dart' as bip39;
-import 'package:bip32/bip32.dart' as bip32;
+import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 // Create storage
 final storage = new FlutterSecureStorage();
 
 List<String> clients = new List<String>();
-String selected_client = null;
-var btcaddr = "none";
-var mnemonic = "";
-var address = "";
-var triesCount = 0;
 List<String> messages = new List<String>();
+String selected_client = null;
+String nym_address = "";
+String ipAddress = "";
+var triesCount = 0;
 WebSocketChannel channel;
-
-String getAddress(node, [network]) {
-  return P2PKH(data: new PaymentData(pubkey: node.publicKey), network: network)
-      .data
-      .address;
-}
 
 String sendMessage(String destination, String message) {
   var payload = {
@@ -39,20 +28,75 @@ String sendMessage(String destination, String message) {
   channel.sink.add(jsonPayload);
 }
 
-Future<void> loadWallet() async {
-  // check if exists
-  var words = await storage.read(key: "bip39Words");
-  if (words == null) {
-    // generate wallet
-    words = bip39.generateMnemonic();
-    // save wallet
-    await storage.write(key: "bip39Words", value: words);
+Future selectFirtIPv4Address() async {
+  for (var interface in await NetworkInterface.list()) {
+    for (var addr in interface.addresses) {
+      if (!addr.isLoopback) {
+        if (addr.type.name == "IPv4") {
+          ipAddress = addr.address;
+          break;
+        }
+      }
+    }
   }
+}
 
-  var seed = bip39.mnemonicToSeed(mnemonic);
-  var root = bip32.BIP32.fromSeed(seed);
+Future<void> check_messages() async {
+  print("check messages");
+  new Future.delayed(const Duration(seconds: 6), () {
+    print('fetching info ...');
 
-  // save address
-  btcaddr = getAddress(root.derivePath("m/0'/0/0"));
-  mnemonic = words;
+    channel.stream.listen((data) {
+      print(data);
+      Map<String, dynamic> decode = jsonDecode(data);
+      print(decode);
+      if (decode["type"] == "getClients") {
+        final list = decode["clients"];
+        for (final x in list) {
+          clients.add(x);
+        }
+        clients.sort();
+      } else if (decode["type"] == "ownDetails") {
+        nym_address = decode['address'];
+
+        check_messages();
+      } else if (decode["type"] == "fetch") {
+        print(decode["messages"]);
+        for (final x in decode["messages"]) {
+          messages.add(x);
+        }
+      }
+    }, onError: (err) {
+      print("err: $err");
+    }, onDone: () {
+    });
+
+
+    channel.sink.add('{"type" : "SelfAddress" }');
+    channel.sink.add('{"type" : "GetClients" }');
+    channel.sink.add('{"type" : "getClients" }');
+    check_messages();
+  });
+}
+
+Future<void> connectWS() async {
+  await selectFirtIPv4Address();
+  try {
+    await Future.delayed(Duration(seconds: 5));
+    var webSocketAddress = 'ws://' + ipAddress + ':1789';
+    print(webSocketAddress);
+    channel = IOWebSocketChannel.connect(webSocketAddress);
+//
+//    channel.sink.add('{"type" : "ownDetails" }');
+//    channel.sink.add('{"type" : "getClients" }');
+//    channel.sink.add('{"type" : "fetch" }');
+  } catch (e) {
+    print('Error connecting to ws: $e');
+    triesCount++;
+    if (triesCount <= 3) {
+      print("trying " + triesCount.toString());
+
+      await connectWS();
+    }
+  }
 }

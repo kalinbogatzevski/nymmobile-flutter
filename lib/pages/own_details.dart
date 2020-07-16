@@ -1,11 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:web_socket_channel/src/channel.dart';
 import 'package:flutterwhatsapp/globals.dart' as globals;
-import 'package:qr_flutter/qr_flutter.dart';
-
-import 'message_screen.dart';
 
 class DetailScreen extends StatefulWidget {
   DetailScreen();
@@ -20,7 +14,9 @@ class DetailScreenState extends State<DetailScreen> {
   @override
   void initState() {
     super.initState();
-    setState(() {});
+    setState(() {
+      globals.check_messages();
+    });
   }
 
   @override
@@ -28,14 +24,21 @@ class DetailScreenState extends State<DetailScreen> {
     return new Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        new Text("Nym Public Address"),
-        QrImage(
-          data: globals.address,
-          version: QrVersions.auto,
-          size: 200.0,
-        ),
+        new Text("NYM ADDRESS"),
         new Text(
-          globals.address,
+          globals.nym_address,
+          style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0),
+          softWrap: true,
+        ),
+        new Text("MIXNODE IP ADDRESS"),
+        new Text(
+          globals.ipAddress,
+          style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0),
+          softWrap: true,
+        ),
+        new Text("Working in Progress ..."),
+        new Text(
+          "",
           style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
           softWrap: true,
         ),

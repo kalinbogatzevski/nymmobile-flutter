@@ -3,4 +3,6 @@
 
 @interface AppDelegate : FlutterAppDelegate
 
+- (NSString *)getIPAddress;
+
 @end

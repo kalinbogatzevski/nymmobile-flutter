@@ -5,4 +5,4 @@
 
 void init(const char *id);
 
-void run(const char *id, const char *host);
+void run(const char *id);

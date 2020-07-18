@@ -45,7 +45,7 @@
   [GeneratedPluginRegistrant registerWithRegistry:self];
   // Override point for customization after application launch.
     
-    NSString *userId = @"usertest";
+    NSString *userId = @"xxxx";
     init([userId UTF8String]);
     
     if([[UIDevice currentDevice] respondsToSelector:@selector(isMultitaskingSupported)])
@@ -66,7 +66,7 @@
             //### background task starts
             NSLog(@"Running in the background\n");
             
-            run([userId UTF8String], [[self getIPAddress] UTF8String]);
+            run([userId UTF8String]);
 
             //Clean up code. Tell the system that we are done.
             [application endBackgroundTask: background_task];

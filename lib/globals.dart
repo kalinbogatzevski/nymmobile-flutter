@@ -68,13 +68,12 @@ Future<void> check_messages() async {
       }
     }, onError: (err) {
       print("err: $err");
-    }, onDone: () {
-    });
+    }, onDone: () {});
 
-
-    channel.sink.add('{"type" : "SelfAddress" }');
-    channel.sink.add('{"type" : "GetClients" }');
-    channel.sink.add('{"type" : "getClients" }');
+//    channel.sink.add('{"type" : "selfAddress" }');
+//    channel.sink.add('{"type" : "getClients" }');
+//    channel.sink.add('{"type" : "SelfAddress" }');
+//    channel.sink.add('{"type" : "GetClients" }');
     check_messages();
   });
 }
@@ -86,10 +85,14 @@ Future<void> connectWS() async {
     var webSocketAddress = 'ws://' + ipAddress + ':1789';
     print(webSocketAddress);
     channel = IOWebSocketChannel.connect(webSocketAddress);
-//
-//    channel.sink.add('{"type" : "ownDetails" }');
-//    channel.sink.add('{"type" : "getClients" }');
-//    channel.sink.add('{"type" : "fetch" }');
+
+    channel.stream.listen((data) {
+      print(data);
+    }, onError: (err) {
+      print("err: $err");
+    }, onDone: () {});
+
+    channel.sink.add('{"type" : "selfAddress" }');
   } catch (e) {
     print('Error connecting to ws: $e');
     triesCount++;

@@ -1,13 +1,10 @@
 package com.example.flutterwhatsapp;
 
 import android.os.Bundle;
-import android.util.Log;
-
-import java.io.File;
 
 import io.flutter.app.FlutterActivity;
 import io.flutter.plugins.GeneratedPluginRegistrant;
-import nymmobile.Nymmobile;
+import nym.mobile.NativeClientFacade;
 
 public class MainActivity extends FlutterActivity {
     @Override
@@ -15,32 +12,22 @@ public class MainActivity extends FlutterActivity {
         super.onCreate(savedInstanceState);
         GeneratedPluginRegistrant.registerWith(this);
 
-        String homeDirectory = getApplicationContext().getFilesDir().getAbsolutePath();
-        new RunServerTask(homeDirectory).execute();
+//        String homeDirectory = getApplicationContext().getFilesDir().getAbsolutePath();
+        new RunServerTask().execute();
 
     }
 
     static class RunServerTask extends android.os.AsyncTask {
 
-        private final String homeDirectory;
+        public RunServerTask() {
 
-        public RunServerTask(String homeDirectory) {
-            this.homeDirectory = homeDirectory;
         }
 
         @Override
         protected Object doInBackground(Object[] objects) {
-
-            File userDirectory = new File(homeDirectory, "user");
-            String providerID = "54U6krAr-j9nQXFlsHk3io04_p0tctuqH71t7w_usgI=";
-            String userid = "user";
-            if (!userDirectory.exists()) {
-                userDirectory.mkdirs();
-                nymmobile.Nymmobile.generateKeyPair(userid, userDirectory.getAbsolutePath(), providerID);
-            }
-
-            nymmobile.Nymmobile.startWebsocket(userid, userDirectory.getAbsolutePath());
-
+            String id = "bob";
+            NativeClientFacade.init(id);
+            NativeClientFacade.run(id);
             return null;
         }
     }
